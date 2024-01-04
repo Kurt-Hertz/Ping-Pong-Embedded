@@ -83,7 +83,7 @@ def special():
     
 
 
-print("Welcome to the natiol basement ping pong competion\n")
+print("Welcome to the national basement ping pong competion\n")
 
 parent = tk.Tk()
 frame = tk.Frame(parent)
