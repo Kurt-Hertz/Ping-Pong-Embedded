@@ -1,6 +1,22 @@
 import tkinter as tk
 import random as ran
 
+import time
+from machine import Pin, Signal
+
+import network
+sta_if = network.WLAN(network.STA_IF)
+sta_if.active(True)
+sta_if.connect('TaylorMade', 'Taz/Mania')
+
+import mip
+mip.install("github:mcauser/micropython-tm1637")
+
+import tm1637
+# Pinout for Wemos D1 mini:
+# https://static3.gleanntronics.ie/eng_pl_WeMos-D1-Mini-ESP8266-12F-Module-Arduino-IoT-426_2.jpg
+tm = tm1637.TM1637(clk=Pin(5), dio=Pin(4))
+
 button1 = 0
 button2 = 0
 chain1 = 0
@@ -17,6 +33,7 @@ def reset():
 def update_score():
     home_score.set(button1)
     away_score.set(button2)
+    display()
     special()
 
 def increment():
@@ -32,6 +49,9 @@ def decrement():
     chain2 += 1
     chain1 = 0
     update_score()
+
+def display():
+    tm.numbers(button1, button2)
 
 def special():
     if(button1 == 21 and button2 < 20):
@@ -81,37 +101,40 @@ def special():
     elif(chain2 == 7):
         print("Away team needs to be stoped")
     
-
-
 print("Welcome to the national basement ping pong competion\n")
 
-parent = tk.Tk()
-frame = tk.Frame(parent)
-frame.pack()
+pin2 = Pin(2, Pin.OUT)
+#pin2 = Signal(2, Pin.OUT, inverted=True)
 
-home_score = tk.IntVar()
-away_score = tk.IntVar()
-result = tk.StringVar()
+while True:
 
-label_home = tk.Label(frame, text="Home: ")
-label_home_score = tk.Label(frame, textvariable=home_score)
-label_home.pack(side=tk.LEFT)
-label_home_score.pack(side=tk.LEFT)
+    parent = tk.Tk()
+    frame = tk.Frame(parent)
+    frame.pack()
 
-label_away = tk.Label(frame, text=" Away: ")
-label_away_score = tk.Label(frame, textvariable=away_score)
-label_away.pack(side=tk.LEFT)
-label_away_score.pack(side=tk.LEFT)
+    home_score = tk.IntVar()
+    away_score = tk.IntVar()
+    result = tk.StringVar()
 
-text_disp = tk.Button(frame, text="Home", command=increment)
-text_disp.pack(side=tk.LEFT)
+    label_home = tk.Label(frame, text="Home: ")
+    label_home_score = tk.Label(frame, textvariable=home_score)
+    label_home.pack(side=tk.LEFT)
+    label_home_score.pack(side=tk.LEFT)
 
-exit_button = tk.Button(frame, text="Away", fg="green", command=decrement)
-exit_button.pack(side=tk.RIGHT)
+    label_away = tk.Label(frame, text=" Away: ")
+    label_away_score = tk.Label(frame, textvariable=away_score)
+    label_away.pack(side=tk.LEFT)
+    label_away_score.pack(side=tk.LEFT)
 
-label_result = tk.Label(frame, textvariable=result)
-label_result.pack()
+    text_disp = tk.Button(frame, text="Home", command=increment)
+    text_disp.pack(side=tk.LEFT)
 
-parent.mainloop()
+    exit_button = tk.Button(frame, text="Away", fg="green", command=decrement)
+    exit_button.pack(side=tk.RIGHT)
+
+    label_result = tk.Label(frame, textvariable=result)
+    label_result.pack()
+
+    parent.mainloop()
 
         
