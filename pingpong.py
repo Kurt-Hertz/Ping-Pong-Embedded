@@ -14,44 +14,37 @@ import tm1637
 # https://static3.gleanntronics.ie/eng_pl_WeMos-D1-Mini-ESP8266-12F-Module-Arduino-IoT-426_2.jpg
 tm = tm1637.TM1637(clk=Pin(5), dio=Pin(4))
 
-score1 = 0
-score2 = 0
-chain1 = 0
-chain2 = 0
 
-def reset():
-    global score1, score2, chain1, chain2
+
+def reset(score1, score2, chain1, chain2):
     score1 = 0
     score2 = 0
     chain1 = 0
     chain2 = 0
     print("the game has been reset")
-    update_score()
+    update_score(score1, score2, chain1, chain2)
 
-def update_score():
-    display()
-    special()
+def update_score(score1, score2, chain1, chain2):
+    display(score1, score2)
+    special(score1, score2, chain1, chain2)
 
-def player1_scored():
-    global score1, chain1, chain2
+def player1_scored(score1, score2, chain1, chain2):
     score1 += 1
     chain1 += 1
     chain2 = 0
-    update_score()
+    update_score(score1, score2, chain1, chain2)
 
-def player2_scored():
-    global score2, chain1, chain2
+def player2_scored(score1, score2, chain1, chain2):
     score2 += 1
     chain2 += 1
     chain1 = 0
-    update_score()
+    update_score(score1, score2, chain1, chain2)
 
-def display():
+def display(score1, score2):
     global tm
     tm.numbers(score1, score2)
 
-def special():
-    global score1, score2, chain1, chain2
+def special(score1, score2, chain1, chain2):
     if(score1 == 21 and score2 < 20):
         print("Home team wins")
         reset()
@@ -104,11 +97,15 @@ pin2 = Pin(2, Pin.OUT)
 #pin2 = Signal(2, Pin.OUT, inverted=True)
 
 def main():
-    global score1, score2
+    score1 = 0
+    score2 = 0
+    chain1 = 0
+    chain2 = 0
+
     while True:
-        display()
-        player1_scored()
-        player2_scored()
+        display(score1, score2)
+        player1_scored(score1, score2, chain1, chain2)
+        player2_scored(score1, score2, chain1, chain2)
         if score1 >= 21 or score2 >= 21:
             reset()
     
