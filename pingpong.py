@@ -23,7 +23,7 @@ class Scoreboard:
         self.chain2 = 0
         self.winby = winby
         self.maxScore = maxScore
-        self.tm = tm1637.TM1637(clk=Pin(5), dio=Pin(4))
+        self.tm = tm1637.TM1637(clk=Pin(4), dio=Pin(0))
     def reset(self):
         self.score1 = 0
         self.score2 = 0
@@ -94,16 +94,23 @@ class Scoreboard:
         
 print("Welcome to the national basement ping pong competion\n")
 
-pin2 = Pin(2, Pin.OUT)
+button1 = Pin(12, Pin.OUT)
+
+button2 = Pin(14, Pin.OUT)
 #pin2 = Signal(self.winby, Pin.OUT, inverted=True)
 
 def main():
     sb = Scoreboard(21 , 2)
-    
+    button1 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
+    button2 = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
     while True:
         sb.display()
-        sb.player1_scored()
-        sb.player2_scored()
+        if (button1.value() == 1):
+             sb.player1_scored()
+             time.sleep(1) 
+        elif (button2.value() == 1):
+             sb.player2_scored()
+             time.sleep(1) 
         
     
 
