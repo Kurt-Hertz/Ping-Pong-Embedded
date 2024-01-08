@@ -12,7 +12,6 @@ mip.install("github:mcauser/micropython-tm1637")
 import tm1637
 # Pinout for Wemos D1 mini:
 # https://static3.gleanntronics.ie/eng_pl_WeMos-D1-Mini-ESP8266-12F-Module-Arduino-IoT-426_2.jpg
-#tm = tm1637.TM1637(clk=Pin(5), dio=Pin(4))
 
 
 class Scoreboard:
@@ -23,7 +22,7 @@ class Scoreboard:
         self.chain2 = 0
         self.winby = winby
         self.maxScore = maxScore
-        self.tm = tm1637.TM1637(clk=Pin(4), dio=Pin(0))
+        self.tm = tm1637.TM1637(clk=Pin(4), dio=Pin(0)) # Pins D2 and D3
     def reset(self):
         self.score1 = 0
         self.score2 = 0
@@ -101,8 +100,8 @@ button2 = Pin(14, Pin.OUT)
 
 def main():
     sb = Scoreboard(21 , 2)
-    button1 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
-    button2 = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
+    button1 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP) # Pin D6
+    button2 = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP) # Pin D5
     while True:
         sb.display()
         if (button1.value() == 1):
